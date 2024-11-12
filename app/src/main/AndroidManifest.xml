@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Message"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="34">
         <service
             android:name=".service.MessageService"
             android:enabled="true"

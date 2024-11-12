@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="75dp"
+    android:height="75dp"
+    android:viewportWidth="75.0"
+    android:viewportHeight="75.0">
+    <path
+        android:fillColor="?android:attr/selectableItemBackground"
+        android:pathData="M0, 37.5 v-37.5 h37.5 A37.5 37.5 0 0 0 0 37.5 z" />
+    <path
+        android:fillColor="?android:attr/selectableItemBackground"
+        android:pathData="M37.5, 0 h37.5 v37.5 A37.5 37.5 0 0 0 37.5 0 z" />
+    <path
+        android:fillColor="?android:attr/selectableItemBackground"
+        android:pathData="M75, 37.5 v37.5 h-37.5 A37.5 37.5 0 0 0 75 37.5 z" />
+    <path
+        android:fillColor="?android:attr/selectableItemBackground"
+        android:pathData="M37.5, 75 h-37.5 v-37.5 A37.5 37.5 0 0 0 37.5 75 z" />
+</vector>

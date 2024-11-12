@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Message</string>
+    <string name="title_home">好友</string>
+    <string name="title_dashboard">群组</string>
+    <string name="title_notifications">设置</string>
+    <string name="textview_username">用户名</string>
+    <string name="textview_password">密码</string>
+    <string name="textview_signature">签名</string>
+    <string name="textview_email">电子邮箱</string>
+    <string name="textview_group_name">群组名</string>
+    <string name="textview_describe">群组简介</string>
+    <string name="textview_confirm_password">确认密码</string>
+    <string name="button_login">登录</string>
+    <string name="button_register">注册</string>
+    <string name="button_send">发送</string>
+    <string name="button_save">保存</string>
+    <string name="button_logout">注销</string>
+    <string name="button_delete_friend">删除好友</string>
+    <string name="button_delete_group">退出群组</string>
+    <string name="button_add_friend">添加好友</string>
+    <string name="button_add_group">加入群组</string>
+    <string name="button_create_group">创建群组</string>
+    <string name="setting_userinfo">个人信息</string>
+    <string name="setting_systemInfo">应用信息</string>
+    <string name="describe_number">您的身份编号为:</string>
+    <string name="describe_group_id">群组编号为:</string>
+    <string name="describe_add_friend">输入好友编号</string>
+    <string name="describe_add_group">输入群组编号</string>
+    <string name="describe_create_group">输入群组名</string>
+    <string name="menu_chat_info">更多信息</string>
+    <string name="menu_about">关于</string>
+    <string name="author">赵宏顺</string>
+</resources>

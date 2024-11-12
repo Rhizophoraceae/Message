@@ -18,20 +18,20 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="34">
         <service
-            android:name=".service.MessageService"
+            android:name="com.mgs.message.service.MessageService"
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".UserinfoActivity" />
-        <activity android:name=".SystemInfoActivity" />
-        <activity android:name=".FriendInfoActivity" />
-        <activity android:name=".GroupInfoActivity" />
-        <activity android:name=".ChatActivity"
+        <activity android:name="com.mgs.message.LoginActivity" />
+        <activity android:name="com.mgs.message.RegisterActivity" />
+        <activity android:name="com.mgs.message.UserinfoActivity" />
+        <activity android:name="com.mgs.message.SystemInfoActivity" />
+        <activity android:name="com.mgs.message.FriendInfoActivity" />
+        <activity android:name="com.mgs.message.GroupInfoActivity" />
+        <activity android:name="com.mgs.message.ChatActivity"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".MainActivity"
+            android:name="com.mgs.message.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

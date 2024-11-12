@@ -6,9 +6,9 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.rjgc.zhs"
+        applicationId 'com.mgs.message'
         minSdk 30
-        targetSdk 32
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -28,7 +28,7 @@ android {
     buildFeatures {
         viewBinding true
     }
-    namespace 'com.rjgc.zhs'
+    namespace 'com.mgs.message'
 }
 
 dependencies {

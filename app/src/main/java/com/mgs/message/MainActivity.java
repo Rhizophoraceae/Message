@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.mgs.message.ui.login.LoginActivity;
 import com.mgs.message.service.MessageService;
 import com.mgs.message.databinding.ActivityMainBinding;
 import com.mgs.message.utils.CurrentUser;

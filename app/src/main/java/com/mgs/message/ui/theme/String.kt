@@ -1,0 +1,15 @@
+package com.mgs.message.ui.theme
+
+const val loginActivityTitle = "LoginActivity"
+const val descriptionShowPassword = "显示密码"
+const val descriptionHidePassword = "隐藏密码"
+const val descriptionSend = "信息"
+const val pictureDescriptionIcon = "头像"
+const val pictureDescriptionSend = "发送"
+const val pictureDescriptionBack = "返回"
+const val pictureDescriptionLogo = "Message"
+const val pictureDescriptionFriendInfo = "联系人信息"
+const val buttonLogin = "登录"
+const val buttonRegister = "注册"
+const val textFieldUsername = "用户名"
+const val textFieldPassword = "密码"

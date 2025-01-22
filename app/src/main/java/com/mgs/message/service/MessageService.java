@@ -12,13 +12,13 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.mgs.message.data.GroupObject;
+import com.mgs.message.data.UserObject;
 import com.mgs.message.utils.NotificationSender;
 import com.mgs.message.utils.WebSocketClient;
-import com.mgs.message.data.Group;
-import com.mgs.message.data.Message;
+import com.mgs.message.data.MessageObject;
 import com.mgs.message.data.MessageEvent;
 import com.mgs.message.data.Setting;
-import com.mgs.message.data.User;
 import com.mgs.message.utils.CurrentUser;
 
 import org.greenrobot.eventbus.EventBus;
@@ -57,7 +57,7 @@ public class MessageService extends Service {
         EventBus.getDefault().register(this); //EventBus注册
         new Thread(() -> {
             getIcon();
-            WebSocketClient.connect(CurrentUser.hostIp, CurrentUser.hostPort, CurrentUser.user.getUserId()); // 发起连接
+            WebSocketClient.connect(CurrentUser.hostIp, CurrentUser.hostPort, CurrentUser.userObject.getUserId()); // 发起连接
         }).start();
         Log.i("service", "服务启动");
     }
@@ -79,11 +79,11 @@ public class MessageService extends Service {
                 intent.setAction("message");
                 intent.putExtra("message", json);
                 sendBroadcast(intent);
-                Message message = new Gson().fromJson(json, Message.class);
-                if (message.getIsGroup() == 0)
-                    NotificationSender.Send(context, notificationManager, message.getUsername(), message.getContent(), "icon");
+                MessageObject messageObject = new Gson().fromJson(json, MessageObject.class);
+                if (messageObject.getIsGroup() == 0)
+                    NotificationSender.Send(context, notificationManager, messageObject.getUsername(), messageObject.getContent(), "icon");
                 else
-                    NotificationSender.Send(context, notificationManager, message.getGroupName(), message.getUsername() + ": " + message.getContent(), "icon");
+                    NotificationSender.Send(context, notificationManager, messageObject.getGroupName(), messageObject.getUsername() + ": " + messageObject.getContent(), "icon");
                 break;
             case TV_ERROR:
                 Log.i("service", "异常信息");
@@ -99,10 +99,10 @@ public class MessageService extends Service {
 
     private void getIcon() {
         try {
-            URL url = new URL("http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/" + CurrentUser.user.getIcon());
+            URL url = new URL("http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/" + CurrentUser.userObject.getIcon());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             CurrentUser.icon = BitmapFactory.decodeStream(connection.getInputStream());
-            CurrentUser.iconMap.put(CurrentUser.user.getIcon(), CurrentUser.icon);
+            CurrentUser.iconMap.put(CurrentUser.userObject.getIcon(), CurrentUser.icon);
             Log.i("icon", "图片: " + CurrentUser.icon);
         } catch (IOException e) {
             Log.i("icon", "图片获取失败");
@@ -125,12 +125,12 @@ public class MessageService extends Service {
     }
 
     public static class AppInfo {
-        private User user;
+        private UserObject userObject;
         private Bitmap icon;
-        private List<User> userList;
-        private List<Group> groupList;
+        private List<UserObject> userObjectList;
+        private List<GroupObject> groupObjectList;
         private List<Setting> settingList;
-        private List<User> memberList;
+        private List<UserObject> memberList;
         private HashMap<String, Bitmap> iconMap;
         private HashMap<String, Bitmap> iconMapGroup;
         private HashMap<Integer, HashMap<String, Bitmap>> iconMapGroupMember;
@@ -140,9 +140,9 @@ public class MessageService extends Service {
         private int isGroup;
 
         public AppInfo() {
-            user = new User();
-            userList = new ArrayList<>();
-            groupList = new ArrayList<>();
+            userObject = new UserObject();
+            userObjectList = new ArrayList<>();
+            groupObjectList = new ArrayList<>();
             settingList = new ArrayList<>();
             memberList = new ArrayList<>();
             iconMap = new HashMap<>();
@@ -155,10 +155,10 @@ public class MessageService extends Service {
         }
 
         public void saveInfo() {
-            user = CurrentUser.user;
+            userObject = CurrentUser.userObject;
             icon = CurrentUser.icon;
-            userList = CurrentUser.userList;
-            groupList = CurrentUser.groupList;
+            userObjectList = CurrentUser.userObjectList;
+            groupObjectList = CurrentUser.groupObjectList;
             settingList = CurrentUser.settingList;
             memberList = CurrentUser.memberList;
             iconMap = CurrentUser.iconMap;
@@ -171,10 +171,10 @@ public class MessageService extends Service {
         }
 
         public void loadInfo() {
-            CurrentUser.user = user;
+            CurrentUser.userObject = userObject;
             CurrentUser.icon = icon;
-            CurrentUser.userList = userList;
-            CurrentUser.groupList = groupList;
+            CurrentUser.userObjectList = userObjectList;
+            CurrentUser.groupObjectList = groupObjectList;
             CurrentUser.settingList = settingList;
             CurrentUser.memberList = memberList;
             CurrentUser.iconMap = iconMap;

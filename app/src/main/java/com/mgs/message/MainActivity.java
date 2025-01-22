@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intentLoad = new Intent();
         intentLoad.setAction("load");
         sendBroadcast(intentLoad);
-        if (CurrentUser.user.getUserId() == 0) {
+        if (CurrentUser.userObject.getUserId() == 0) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         } else {

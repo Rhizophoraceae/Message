@@ -1,6 +1,9 @@
 package com.mgs.message.ui.theme
 
-const val loginActivityTitle = "LoginActivity"
+const val titleChat = "信息"
+const val titleGroup = "群组"
+const val titleAccount = "账户"
+const val titleMessage = "会话"
 const val descriptionShowPassword = "显示密码"
 const val descriptionHidePassword = "隐藏密码"
 const val descriptionSend = "信息"

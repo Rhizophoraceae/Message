@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.mgs.message.adapter.RecyclerViewAdapterFriends;
+import com.mgs.message.data.UserObject;
 import com.mgs.message.utils.ToastSender;
-import com.mgs.message.data.User;
 import com.mgs.message.databinding.FragmentHomeBinding;
 import com.mgs.message.utils.CurrentUser;
 
@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0) {
-                Log.i("home", CurrentUser.userList.toString());
+                Log.i("home", CurrentUser.userObjectList.toString());
                 updateUI();
                 Log.i("home", "好友列表已获取");
             } else {
@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        binding.buttonAdd.setOnClickListener(view -> addFriend(CurrentUser.user.getUserId(), binding.editTextFriendId.getText().toString().trim()));
+        binding.buttonAdd.setOnClickListener(view -> addFriend(CurrentUser.userObject.getUserId(), binding.editTextFriendId.getText().toString().trim()));
 
         getFriendList();
 
@@ -117,31 +117,31 @@ public class HomeFragment extends Fragment {
 
     private void getFriendList() {
         JSONObject json = new JSONObject();
-        List<User> userList = new ArrayList<>();
+        List<UserObject> userObjectList = new ArrayList<>();
         try {
-            json.put("userId", CurrentUser.user.getUserId() + "");
+            json.put("userId", CurrentUser.userObject.getUserId() + "");
             Thread thread = new Thread(() -> {
                 JSONArray responseJSON = httpRequest(json);
                 if (responseJSON != null) {
                     try {
                         Gson gson = new Gson();
                         for (int i = 0; i < responseJSON.length(); i++) {
-                            User tempUser = gson.fromJson(responseJSON.get(i).toString(), User.class);
+                            UserObject tempUserObject = gson.fromJson(responseJSON.get(i).toString(), UserObject.class);
                             try {
-                                URL url = new URL("http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/" + tempUser.getIcon());
+                                URL url = new URL("http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/" + tempUserObject.getIcon());
                                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                Log.i("icon", "获取图标" + tempUser.getIcon());
-                                CurrentUser.iconMap.put(tempUser.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
+                                Log.i("icon", "获取图标" + tempUserObject.getIcon());
+                                CurrentUser.iconMap.put(tempUserObject.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 URL url = new URL("http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/images/default_user.png");
                                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                Log.i("icon", "获取默认图标" + tempUser.getIcon());
-                                CurrentUser.iconMap.put(tempUser.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
+                                Log.i("icon", "获取默认图标" + tempUserObject.getIcon());
+                                CurrentUser.iconMap.put(tempUserObject.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
                             }
-                            userList.add(tempUser);
+                            userObjectList.add(tempUserObject);
                         }
-                        CurrentUser.userList = userList;
+                        CurrentUser.userObjectList = userObjectList;
                         handler.sendEmptyMessage(0);
                     } catch (JSONException | IOException e) {
                         e.printStackTrace();
@@ -160,7 +160,7 @@ public class HomeFragment extends Fragment {
     private void updateUI() {
         recyclerView = binding.recyclerViewFriends;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new RecyclerViewAdapterFriends(CurrentUser.userList, CurrentUser.iconMap);
+        adapter = new RecyclerViewAdapterFriends(CurrentUser.userObjectList, CurrentUser.iconMap);
         recyclerView.setAdapter(adapter);
     }
 

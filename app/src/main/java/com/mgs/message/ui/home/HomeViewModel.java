@@ -2,22 +2,22 @@ package com.mgs.message.ui.home;
 
 import androidx.lifecycle.ViewModel;
 
-import com.mgs.message.data.User;
+import com.mgs.message.data.UserObject;
 
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
 
-    private List<User> userList = null;
+    private List<UserObject> userObjectList = null;
 
     public HomeViewModel() {
     }
 
-    public List<User> getUserList() {
-        return userList;
+    public List<UserObject> getUserList() {
+        return userObjectList;
     }
 
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
+    public void setUserList(List<UserObject> userObjectList) {
+        this.userObjectList = userObjectList;
     }
 }

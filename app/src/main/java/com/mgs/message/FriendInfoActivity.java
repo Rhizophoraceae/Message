@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.mgs.message.data.User;
+import com.mgs.message.data.UserObject;
 import com.mgs.message.utils.CurrentUser;
 import com.mgs.message.utils.ToastSender;
 
@@ -30,7 +30,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class FriendInfoActivity extends AppCompatActivity {
-    private User friend;
+    private UserObject friend;
     Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(@NonNull android.os.Message msg) {
@@ -48,7 +48,7 @@ public class FriendInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friendinfo);
         int toPosition = getIntent().getIntExtra("toPosition", 0);
-        friend = CurrentUser.userList.get(toPosition);
+        friend = CurrentUser.userObjectList.get(toPosition);
         ImageView imageViewIcon = this.findViewById(R.id.imageViewIcon);
         imageViewIcon.setImageBitmap(CurrentUser.iconMap.get(friend.getIcon()));
         TextView textViewUsername = this.findViewById(R.id.textViewUsername);
@@ -64,7 +64,7 @@ public class FriendInfoActivity extends AppCompatActivity {
         else
             textViewSignature.setText(friend.getSignature());
         Button button = this.findViewById(R.id.buttonDelete);
-        button.setOnClickListener(view -> deleteFriend(CurrentUser.user.getUserId(), friend.getUserId()));
+        button.setOnClickListener(view -> deleteFriend(CurrentUser.userObject.getUserId(), friend.getUserId()));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

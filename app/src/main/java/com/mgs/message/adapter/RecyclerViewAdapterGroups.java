@@ -14,18 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mgs.message.ChatActivity;
 import com.mgs.message.R;
-import com.mgs.message.data.Group;
+import com.mgs.message.data.GroupObject;
 import com.mgs.message.utils.CurrentUser;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerViewAdapterGroups.ViewHolder> {
-    private List<Group> groupList;
+    private List<GroupObject> groupObjectList;
     private HashMap<String, Bitmap> iconMap;
 
-    public RecyclerViewAdapterGroups(List<Group> groupList, HashMap<String, Bitmap> iconMap) {
-        this.groupList = groupList;
+    public RecyclerViewAdapterGroups(List<GroupObject> groupObjectList, HashMap<String, Bitmap> iconMap) {
+        this.groupObjectList = groupObjectList;
         this.iconMap = iconMap;
     }
 
@@ -40,13 +40,13 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.textView.setText(groupList.get(position).getGroupName());
-        holder.imageView.setImageBitmap(iconMap.get(groupList.get(position).getIcon()));
+        holder.textView.setText(groupObjectList.get(position).getGroupName());
+        holder.imageView.setImageBitmap(iconMap.get(groupObjectList.get(position).getIcon()));
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), ChatActivity.class);
             intent.putExtra("toPosition", position);
             view.getContext().startActivity(intent);
-            CurrentUser.toId = groupList.get(position).getGroupId();
+            CurrentUser.toId = groupObjectList.get(position).getGroupId();
             CurrentUser.isGroup = 1;
             Log.i("click", "clicked" + position);
         });
@@ -54,7 +54,7 @@ public class RecyclerViewAdapterGroups extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public int getItemCount() {
-        return groupList.size();
+        return groupObjectList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

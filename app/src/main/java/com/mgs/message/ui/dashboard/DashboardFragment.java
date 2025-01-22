@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.mgs.message.adapter.RecyclerViewAdapterGroups;
 import com.mgs.message.utils.ToastSender;
-import com.mgs.message.data.Group;
+import com.mgs.message.data.GroupObject;
 import com.mgs.message.databinding.FragmentDashboardBinding;
 import com.mgs.message.utils.CurrentUser;
 
@@ -49,7 +49,7 @@ public class DashboardFragment extends Fragment {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0) {
-                Log.i("home", CurrentUser.groupList.toString());
+                Log.i("home", CurrentUser.groupObjectList.toString());
                 updateUI();
                 Log.i("home", "群组列表已获取");
             } else {
@@ -96,8 +96,8 @@ public class DashboardFragment extends Fragment {
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        binding.buttonAdd.setOnClickListener(view -> addGroup(CurrentUser.user.getUserId(), binding.editTextGroupId.getText().toString().trim()));
-        binding.buttonCreate.setOnClickListener(view -> createGroup(CurrentUser.user.getUserId(), binding.editTextGroupName.getText().toString().trim()));
+        binding.buttonAdd.setOnClickListener(view -> addGroup(CurrentUser.userObject.getUserId(), binding.editTextGroupId.getText().toString().trim()));
+        binding.buttonCreate.setOnClickListener(view -> createGroup(CurrentUser.userObject.getUserId(), binding.editTextGroupName.getText().toString().trim()));
 
         getGroupList();
 
@@ -166,31 +166,31 @@ public class DashboardFragment extends Fragment {
 
     private void getGroupList() {
         JSONObject json = new JSONObject();
-        List<Group> groupList = new ArrayList<>();
+        List<GroupObject> groupObjectList = new ArrayList<>();
         try {
-            json.put("userId", CurrentUser.user.getUserId() + "");
+            json.put("userId", CurrentUser.userObject.getUserId() + "");
             Thread thread = new Thread(() -> {
                 JSONArray responseJSON = httpRequest(json);
                 if (responseJSON != null) {
                     try {
                         Gson gson = new Gson();
                         for (int i = 0; i < responseJSON.length(); i++) {
-                            Group tempGroup = gson.fromJson(responseJSON.get(i).toString(), Group.class);
+                            GroupObject tempGroupObject = gson.fromJson(responseJSON.get(i).toString(), GroupObject.class);
                             try {
-                                URL url = new URL("http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/" + tempGroup.getIcon());
+                                URL url = new URL("http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/" + tempGroupObject.getIcon());
                                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                Log.i("icon", "获取图标" + tempGroup.getIcon());
-                                CurrentUser.iconMapGroup.put(tempGroup.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
+                                Log.i("icon", "获取图标" + tempGroupObject.getIcon());
+                                CurrentUser.iconMapGroup.put(tempGroupObject.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 URL url = new URL("http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/images/default_group.png");
                                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                Log.i("icon", "获取默认图标" + tempGroup.getIcon());
-                                CurrentUser.iconMapGroup.put(tempGroup.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
+                                Log.i("icon", "获取默认图标" + tempGroupObject.getIcon());
+                                CurrentUser.iconMapGroup.put(tempGroupObject.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
                             }
-                            groupList.add(tempGroup);
+                            groupObjectList.add(tempGroupObject);
                         }
-                        CurrentUser.groupList = groupList;
+                        CurrentUser.groupObjectList = groupObjectList;
                         handler.sendEmptyMessage(0);
                     } catch (JSONException | IOException e) {
                         e.printStackTrace();
@@ -209,7 +209,7 @@ public class DashboardFragment extends Fragment {
     private void updateUI() {
         recyclerView = binding.recyclerViewGroups;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new RecyclerViewAdapterGroups(CurrentUser.groupList, CurrentUser.iconMapGroup);
+        adapter = new RecyclerViewAdapterGroups(CurrentUser.groupObjectList, CurrentUser.iconMapGroup);
         recyclerView.setAdapter(adapter);
     }
 

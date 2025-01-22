@@ -1,6 +1,6 @@
 package com.mgs.message.data;
 
-public class Group {
+public class GroupObject {
     private int groupId;
     private int ownerId;
     private String groupName;

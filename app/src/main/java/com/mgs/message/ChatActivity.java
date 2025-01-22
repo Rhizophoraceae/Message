@@ -29,8 +29,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.mgs.message.adapter.RecyclerViewAdapterMessage;
-import com.mgs.message.data.Message;
-import com.mgs.message.data.User;
+import com.mgs.message.data.MessageObject;
+import com.mgs.message.data.UserObject;
 import com.mgs.message.utils.CurrentUser;
 import com.mgs.message.utils.KeyboardWatcher;
 import com.mgs.message.utils.WebSocketClient;
@@ -58,8 +58,8 @@ public class ChatActivity extends AppCompatActivity implements KeyboardWatcher.O
     private Button buttonSend;
     private RecyclerView recyclerView;
     private RecyclerViewAdapterMessage adapter;
-    private List<Message> messageList;
-    private List<User> memberList;
+    private List<MessageObject> messageObjectList;
+    private List<UserObject> memberList;
     private MessageReceiver receiver;
     private KeyboardWatcher keyboardWatcher;
     private ActionBar actionBar;
@@ -99,9 +99,9 @@ public class ChatActivity extends AppCompatActivity implements KeyboardWatcher.O
         keyboardWatcher.setListener(this);
         toPosition = getIntent().getIntExtra("toPosition", 0);
         if (CurrentUser.isGroup == 1)
-            title = CurrentUser.groupList.get(toPosition).getGroupName();
+            title = CurrentUser.groupObjectList.get(toPosition).getGroupName();
         else
-            title = CurrentUser.userList.get(toPosition).getUsername();
+            title = CurrentUser.userObjectList.get(toPosition).getUsername();
         initUi();
         buttonSend.setOnClickListener(view -> {
             if (editTextMessageInput.getText().toString().trim().equals(""))
@@ -109,11 +109,11 @@ public class ChatActivity extends AppCompatActivity implements KeyboardWatcher.O
             else {
                 JSONObject messageJSON = new JSONObject();
                 try {
-                    messageJSON.put("username", CurrentUser.user.getUsername());
+                    messageJSON.put("username", CurrentUser.userObject.getUsername());
                     messageJSON.put("isGroup", CurrentUser.isGroup);
                     messageJSON.put("toId", CurrentUser.toId);
-                    messageJSON.put("userId", CurrentUser.user.getUserId());
-                    messageJSON.put("icon", CurrentUser.user.getIcon());
+                    messageJSON.put("userId", CurrentUser.userObject.getUserId());
+                    messageJSON.put("icon", CurrentUser.userObject.getIcon());
                     messageJSON.put("content", editTextMessageInput.getText().toString().trim());
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -121,16 +121,16 @@ public class ChatActivity extends AppCompatActivity implements KeyboardWatcher.O
                 String message = messageJSON.toString();
                 if (isClient) {
                     WebSocketClient.Send(message);  //发送消息
-                    Message tempMessage = new Message();
-                    tempMessage.setUsername(CurrentUser.user.getUsername());
-                    tempMessage.setFromId(CurrentUser.user.getUserId());
-                    tempMessage.setIcon(CurrentUser.user.getIcon());
-                    tempMessage.setContent(editTextMessageInput.getText().toString().trim());
+                    MessageObject tempMessageObject = new MessageObject();
+                    tempMessageObject.setUsername(CurrentUser.userObject.getUsername());
+                    tempMessageObject.setFromId(CurrentUser.userObject.getUserId());
+                    tempMessageObject.setIcon(CurrentUser.userObject.getIcon());
+                    tempMessageObject.setContent(editTextMessageInput.getText().toString().trim());
                     editTextMessageInput.setText("");
-                    messageList.add(tempMessage);
+                    messageObjectList.add(tempMessageObject);
                     adapter.notifyDataSetChanged();
                     recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
-                    Log.i("message", "消息: " + tempMessage.getContent() + " 已发送");
+                    Log.i("message", "消息: " + tempMessageObject.getContent() + " 已发送");
                 } else Toast.makeText(ChatActivity.this, "连接失败", Toast.LENGTH_SHORT).show();
             }
         });
@@ -178,7 +178,7 @@ public class ChatActivity extends AppCompatActivity implements KeyboardWatcher.O
     @Override
     protected void onStart() {
         super.onStart();
-        messageList = new ArrayList<>();
+        messageObjectList = new ArrayList<>();
         if (CurrentUser.isGroup == 1) {
             memberList = new ArrayList<>();
             getMemberList();
@@ -195,7 +195,7 @@ public class ChatActivity extends AppCompatActivity implements KeyboardWatcher.O
     }
 
     private void initUi() {
-        messageList = new ArrayList<>();
+        messageObjectList = new ArrayList<>();
         buttonSend = findViewById(R.id.buttonSend);
         editTextMessageInput = findViewById(R.id.editTextInput);
         editTextMessageInput.setOnEditorActionListener((textView, i, keyEvent) -> {
@@ -216,9 +216,9 @@ public class ChatActivity extends AppCompatActivity implements KeyboardWatcher.O
         recyclerView = findViewById(R.id.recyclerViewMessage);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (CurrentUser.isGroup == 1) {
-            adapter = new RecyclerViewAdapterMessage(messageList, CurrentUser.iconMapGroupMember.get(CurrentUser.toId));
+            adapter = new RecyclerViewAdapterMessage(messageObjectList, CurrentUser.iconMapGroupMember.get(CurrentUser.toId));
         } else {
-            adapter = new RecyclerViewAdapterMessage(messageList, CurrentUser.iconMap);
+            adapter = new RecyclerViewAdapterMessage(messageObjectList, CurrentUser.iconMap);
         }
         recyclerView.setAdapter(adapter);
     }
@@ -232,18 +232,18 @@ public class ChatActivity extends AppCompatActivity implements KeyboardWatcher.O
         recyclerView = findViewById(R.id.recyclerViewMessage);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (CurrentUser.isGroup == 1) {
-            adapter = new RecyclerViewAdapterMessage(messageList, CurrentUser.iconMapGroupMember.get(CurrentUser.toId));
+            adapter = new RecyclerViewAdapterMessage(messageObjectList, CurrentUser.iconMapGroupMember.get(CurrentUser.toId));
         } else {
-            adapter = new RecyclerViewAdapterMessage(messageList, CurrentUser.iconMap);
+            adapter = new RecyclerViewAdapterMessage(messageObjectList, CurrentUser.iconMap);
         }
         recyclerView.setAdapter(adapter);
-        recyclerView.scrollToPosition(messageList.size() - 1);
+        recyclerView.scrollToPosition(messageObjectList.size() - 1);
     }
 
     private void getMessageList() {
         JSONObject json = new JSONObject();
         try {
-            json.put("userId", CurrentUser.user.getUserId() + "");
+            json.put("userId", CurrentUser.userObject.getUserId() + "");
             json.put("toId", CurrentUser.toId + "");
             json.put("isGroup", CurrentUser.isGroup + "");
             Thread thread = new Thread(() -> {
@@ -252,8 +252,8 @@ public class ChatActivity extends AppCompatActivity implements KeyboardWatcher.O
                     try {
                         Gson gson = new Gson();
                         for (int i = 0; i < responseJSON.length(); i++) {
-                            Message tempMessage = gson.fromJson(responseJSON.get(i).toString(), Message.class);
-                            messageList.add(tempMessage);
+                            MessageObject tempMessageObject = gson.fromJson(responseJSON.get(i).toString(), MessageObject.class);
+                            messageObjectList.add(tempMessageObject);
                         }
                         handler.sendEmptyMessage(0);
                     } catch (JSONException e) {
@@ -281,20 +281,20 @@ public class ChatActivity extends AppCompatActivity implements KeyboardWatcher.O
                         HashMap<String, Bitmap> tempMap = new HashMap<>();
                         Gson gson = new Gson();
                         for (int i = 0; i < responseJSON.length(); i++) {
-                            User tempUser = gson.fromJson(responseJSON.get(i).toString(), User.class);
+                            UserObject tempUserObject = gson.fromJson(responseJSON.get(i).toString(), UserObject.class);
                             try {
-                                URL url = new URL("http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/" + tempUser.getIcon());
+                                URL url = new URL("http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/" + tempUserObject.getIcon());
                                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                Log.i("icon", "获取图标" + tempUser.getIcon());
-                                tempMap.put(tempUser.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
+                                Log.i("icon", "获取图标" + tempUserObject.getIcon());
+                                tempMap.put(tempUserObject.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 URL url = new URL("http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/images/default_user.png");
                                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                Log.i("icon", "获取默认图标" + tempUser.getIcon());
-                                tempMap.put(tempUser.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
+                                Log.i("icon", "获取默认图标" + tempUserObject.getIcon());
+                                tempMap.put(tempUserObject.getIcon(), BitmapFactory.decodeStream(connection.getInputStream()));
                             }
-                            memberList.add(tempUser);
+                            memberList.add(tempUserObject);
                         }
                         CurrentUser.memberList = memberList;
                         CurrentUser.iconMapGroupMember.put(CurrentUser.toId, tempMap);
@@ -377,8 +377,8 @@ public class ChatActivity extends AppCompatActivity implements KeyboardWatcher.O
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i("message", intent.getStringExtra("message"));
-            Message message = new Gson().fromJson(intent.getStringExtra("message"), Message.class);
-            messageList.add(message);
+            MessageObject messageObject = new Gson().fromJson(intent.getStringExtra("message"), MessageObject.class);
+            messageObjectList.add(messageObject);
             adapter.notifyDataSetChanged();
             recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
         }

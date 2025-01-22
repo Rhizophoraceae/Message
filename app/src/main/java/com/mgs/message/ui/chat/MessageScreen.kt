@@ -1,4 +1,4 @@
-package com.mgs.message.ui.message
+package com.mgs.message.ui.chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -49,8 +48,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
-import com.mgs.message.ui.theme.AppTheme
+import com.mgs.message.data.Message
+import com.mgs.message.data.Target
 import com.mgs.message.ui.theme.descriptionSend
 import com.mgs.message.ui.theme.horizontalPadding
 import com.mgs.message.ui.theme.pictureDescriptionBack
@@ -58,47 +57,55 @@ import com.mgs.message.ui.theme.pictureDescriptionFriendInfo
 import com.mgs.message.ui.theme.pictureDescriptionSend
 import com.mgs.message.ui.theme.sendWidgetVerticalPadding
 import com.mgs.message.ui.theme.verticalPadding
-import com.mgs.message.ui.widget.IconWidgetWithName
-import com.mgs.message.ui.widget.MessageWidget
+import com.mgs.message.ui.widget.IconWidgetOnAppBar
+import com.mgs.message.ui.widget.MessageListItem
 
-@Preview
 @Composable
-fun MessagePage() {
-    AppTheme {
-//        val list = ('A'..'Z').map { it.toString() }
-        val list = listOf(
-            "AAAAAAAAAAAAAAAAAAAAAAAA",
+fun MessageScreen(target: Target) {
+    val list = listOf(
+        Message(0, "AAAAAAAAAAAAAAAAAAAAAAAA", 1),
+        Message(
+            1,
             "测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
-            "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
-            "测",
-            "CCCCCCCCCCCCCCCCCCCCC",
-            "测试测试测试测试",
-            "测试测试测试测试测试测试",
-            "测试测试测试测试测试",
-            "测试测试测试测试测试测试测试测试测试测试测试测试",
-            "D",
+            2
+        ),
+        Message(2, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", 1),
+        Message(3, "测", 2),
+        Message(4, "CCCCCCCCCCCCCCCCCCCCC", 1),
+        Message(5, "测试测试测试测试", 2),
+        Message(6, "测试测试测试测试测试测试", 2),
+        Message(7, "测试测试测试测试测试", 1),
+        Message(8, "测试测试测试测试测试测试测试测试测试测试测试测试", 2),
+        Message(9, "D", 1),
+        Message(
+            10,
             "测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
-            "Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word "
+            2
+        ),
+        Message(
+            11,
+            "Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word Word ",
+            1
         )
-        Scaffold(
-            topBar = {
-                MessageAppBarWidget()
-            },
-            bottomBar = {
-                MessageSendWidget()
-            }
-        ) { innerPadding ->
-            MessageListWidget(list = list, paddingValues = innerPadding)
+    )
+    Scaffold(
+        topBar = {
+            MessageAppBarWidget(name = target.name)
+        },
+        bottomBar = {
+            MessageSendWidget()
         }
+    ) { innerPadding ->
+        MessageListWidget(list = list, paddingValues = innerPadding)
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MessageListWidget(
-    list: List<String>,
-    paddingValues: PaddingValues,
-    modifier: Modifier = Modifier
+    list: List<Message>,
+    modifier: Modifier = Modifier,
+    paddingValues: PaddingValues = PaddingValues()
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -131,8 +138,10 @@ fun MessageListWidget(
                 .align(Alignment.BottomCenter)
                 .focusRequester(focusRequester)
         ) {
-            items(list) { message ->
-                MessageWidget(message)
+            items(items = list, key = { message ->
+                message.id
+            }) { message ->
+                MessageListItem(message = message)
             }
         }
     }
@@ -141,12 +150,10 @@ fun MessageListWidget(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MessageAppBarWidget() {
+fun MessageAppBarWidget(name: String = "name") {
     TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors()
-            .copy(MaterialTheme.colorScheme.surfaceContainer),
         title = {
-            IconWidgetWithName("Username")
+            IconWidgetOnAppBar(name)
         },
         navigationIcon = {
             IconButton(onClick = { /* doSomething() */ }) {

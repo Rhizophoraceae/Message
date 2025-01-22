@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.util.Date;
 
-public class User {
+public class UserObject {
     private int userId;
     private String username;
     private String password;
@@ -13,10 +13,10 @@ public class User {
     private String signature;
     private Date regTime;
 
-    public User() {
+    public UserObject() {
     }
 
-    public User(String username) {
+    public UserObject(String username) {
         this.username = username;
     }
 
@@ -79,7 +79,7 @@ public class User {
     @NonNull
     @Override
     public String toString() {
-        return "User{" +
+        return "UserObject{" +
                 "userId=" + userId +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +

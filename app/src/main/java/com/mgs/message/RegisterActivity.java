@@ -17,8 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.mgs.message.data.UserObject;
 import com.mgs.message.utils.ToastSender;
-import com.mgs.message.data.User;
 import com.mgs.message.utils.CurrentUser;
 
 import org.json.JSONException;
@@ -106,7 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (CurrentUser.user.getUserId() != 0) {
+        if (CurrentUser.userObject.getUserId() != 0) {
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             startActivity(intent);
         }
@@ -121,9 +121,9 @@ public class RegisterActivity extends AppCompatActivity {
                 JSONObject responseJSON = httpRequest(json);
                 if (responseJSON != null) {
                     Log.i("json", responseJSON.toString());
-                    CurrentUser.user = new Gson().fromJson(responseJSON.toString(), User.class);
-                    Log.i("user", CurrentUser.user.toString());
-                    if (CurrentUser.user.getUserId() == -1) {
+                    CurrentUser.userObject = new Gson().fromJson(responseJSON.toString(), UserObject.class);
+                    Log.i("userObject", CurrentUser.userObject.toString());
+                    if (CurrentUser.userObject.getUserId() == -1) {
                         handler.sendEmptyMessage(1);
                     } else {
                         handler.sendEmptyMessage(0);

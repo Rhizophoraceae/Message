@@ -29,7 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mgs.message.adapter.RecyclerViewAdapterGroupMembers;
-import com.mgs.message.data.Group;
+import com.mgs.message.data.GroupObject;
 import com.mgs.message.utils.CurrentUser;
 import com.mgs.message.utils.ToastSender;
 
@@ -58,7 +58,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     private EditText editTextGroupName;
     private EditText editTextDescribe;
     private int toPosition;
-    private Group group;
+    private GroupObject groupObject;
     private File photoFile;
     Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -77,8 +77,8 @@ public class GroupInfoActivity extends AppCompatActivity {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0) {
-                CurrentUser.groupList.get(toPosition).setGroupName(editTextGroupName.getText().toString().trim());
-                CurrentUser.groupList.get(toPosition).setDescribe(editTextDescribe.getText().toString().trim());
+                CurrentUser.groupObjectList.get(toPosition).setGroupName(editTextGroupName.getText().toString().trim());
+                CurrentUser.groupObjectList.get(toPosition).setDescribe(editTextDescribe.getText().toString().trim());
                 ToastSender.send(getApplicationContext(), "保存成功");
             } else {
                 ToastSender.send(getApplicationContext(), "保存失败");
@@ -92,22 +92,22 @@ public class GroupInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groupinfo);
         toPosition = getIntent().getIntExtra("toPosition", 0);
-        group = CurrentUser.groupList.get(toPosition);
+        groupObject = CurrentUser.groupObjectList.get(toPosition);
         imageViewIcon = this.findViewById(R.id.imageViewIcon);
-        imageViewIcon.setImageBitmap(CurrentUser.iconMapGroup.get(group.getIcon()));
+        imageViewIcon.setImageBitmap(CurrentUser.iconMapGroup.get(groupObject.getIcon()));
         TextView textViewId = this.findViewById(R.id.textViewId);
-        textViewId.setText(group.getGroupId() + "");
+        textViewId.setText(groupObject.getGroupId() + "");
         editTextGroupName = this.findViewById(R.id.editTextGroupName);
-        editTextGroupName.setText(group.getGroupName());
+        editTextGroupName.setText(groupObject.getGroupName());
         editTextDescribe = this.findViewById(R.id.editTextDescribe);
-        editTextDescribe.setText(group.getDescribe());
+        editTextDescribe.setText(groupObject.getDescribe());
         Button button = this.findViewById(R.id.buttonDelete);
-        button.setOnClickListener(view -> deleteGroup(CurrentUser.user.getUserId(), group.getGroupId()));
+        button.setOnClickListener(view -> deleteGroup(CurrentUser.userObject.getUserId(), groupObject.getGroupId()));
         Button buttonSave = this.findViewById(R.id.buttonSave);
-        Log.i("groupInfo", "ownerId: " + group.getOwnerId());
-        if (CurrentUser.user.getUserId() == group.getOwnerId()) {
+        Log.i("groupInfo", "ownerId: " + groupObject.getOwnerId());
+        if (CurrentUser.userObject.getUserId() == groupObject.getOwnerId()) {
             imageViewIcon.setOnClickListener(view -> openAlbum());
-            buttonSave.setOnClickListener(view -> saveGroupInfo(group.getGroupId(), editTextGroupName.getText().toString().trim(), editTextDescribe.getText().toString().trim()));
+            buttonSave.setOnClickListener(view -> saveGroupInfo(groupObject.getGroupId(), editTextGroupName.getText().toString().trim(), editTextDescribe.getText().toString().trim()));
         } else {
             editTextGroupName.setEnabled(false);
             editTextDescribe.setEnabled(false);
@@ -115,7 +115,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         }
         RecyclerView recyclerView = findViewById(R.id.recyclerViewGroupMembers);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        RecyclerViewAdapterGroupMembers adapter = new RecyclerViewAdapterGroupMembers(CurrentUser.memberList, CurrentUser.iconMapGroupMember.get(group.getGroupId()));
+        RecyclerViewAdapterGroupMembers adapter = new RecyclerViewAdapterGroupMembers(CurrentUser.memberList, CurrentUser.iconMapGroupMember.get(groupObject.getGroupId()));
         recyclerView.setAdapter(adapter);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -129,7 +129,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                 photoFile = uriToFile(result.getData().getData());
                 String url = "http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/ChangeGroupIcon";
                 uploading(url, photoFile);
-                CurrentUser.iconMapGroup.put(group.getIcon(), BitmapFactory.decodeFile(photoFile.getPath()));
+                CurrentUser.iconMapGroup.put(groupObject.getIcon(), BitmapFactory.decodeFile(photoFile.getPath()));
                 imageViewIcon.setImageURI(result.getData().getData());
                 Log.i("userInfo", "返回成功");
             } else {
@@ -186,7 +186,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         //创建MultipartBody,给RequestBody进行设置
         MultipartBody multipartBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("groupId", group.getGroupId() + "")
+                .addFormDataPart("groupId", groupObject.getGroupId() + "")
                 .addFormDataPart("icon", file.getName(), fileBody)
                 .build();
         //创建Request

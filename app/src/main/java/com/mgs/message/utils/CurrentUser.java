@@ -2,21 +2,21 @@ package com.mgs.message.utils;
 
 import android.graphics.Bitmap;
 
-import com.mgs.message.data.Group;
+import com.mgs.message.data.GroupObject;
 import com.mgs.message.data.Setting;
-import com.mgs.message.data.User;
+import com.mgs.message.data.UserObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class CurrentUser {
-    public static User user = new User();
+    public static UserObject userObject = new UserObject();
     public static Bitmap icon;
-    public static List<User> userList = new ArrayList<>();
-    public static List<Group> groupList = new ArrayList<>();
+    public static List<UserObject> userObjectList = new ArrayList<>();
+    public static List<GroupObject> groupObjectList = new ArrayList<>();
     public static List<Setting> settingList = new ArrayList<>();
-    public static List<User> memberList = new ArrayList<>();
+    public static List<UserObject> memberList = new ArrayList<>();
     public static HashMap<String, Bitmap> iconMap = new HashMap<>();
     public static HashMap<String, Bitmap> iconMapGroup = new HashMap<>();
     public static HashMap<Integer, HashMap<String, Bitmap>> iconMapGroupMember = new HashMap<>();

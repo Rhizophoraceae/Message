@@ -2,7 +2,7 @@ package com.mgs.message.data;
 
 import java.util.Date;
 
-public class Message {
+public class MessageObject {
     int msgId;
     Date msgTime;
     String content;

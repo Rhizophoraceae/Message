@@ -11,18 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mgs.message.R;
-import com.mgs.message.data.Message;
+import com.mgs.message.data.MessageObject;
 import com.mgs.message.utils.CurrentUser;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class RecyclerViewAdapterMessage extends RecyclerView.Adapter<RecyclerViewAdapterMessage.ViewHolder> {
-    private final List<Message> messageList;
+    private final List<MessageObject> messageObjectList;
     private final HashMap<String, Bitmap> iconMap;
 
-    public RecyclerViewAdapterMessage(List<Message> messageList, HashMap<String, Bitmap> iconMap) {
-        this.messageList = messageList;
+    public RecyclerViewAdapterMessage(List<MessageObject> messageObjectList, HashMap<String, Bitmap> iconMap) {
+        this.messageObjectList = messageObjectList;
         this.iconMap = iconMap;
     }
 
@@ -46,7 +46,7 @@ public class RecyclerViewAdapterMessage extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemViewType(int position) {
-        if (messageList.get(position).getFromId() == CurrentUser.user.getUserId()) {
+        if (messageObjectList.get(position).getFromId() == CurrentUser.userObject.getUserId()) {
             return 1;
         }
         return 0;
@@ -54,14 +54,14 @@ public class RecyclerViewAdapterMessage extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.textViewMessage.setText(messageList.get(position).getContent());
-        holder.textViewUsername.setText(messageList.get(position).getUsername());
-        holder.imageViewIcon.setImageBitmap(iconMap.get(messageList.get(position).getIcon()));
+        holder.textViewMessage.setText(messageObjectList.get(position).getContent());
+        holder.textViewUsername.setText(messageObjectList.get(position).getUsername());
+        holder.imageViewIcon.setImageBitmap(iconMap.get(messageObjectList.get(position).getIcon()));
     }
 
     @Override
     public int getItemCount() {
-        return messageList.size();
+        return messageObjectList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

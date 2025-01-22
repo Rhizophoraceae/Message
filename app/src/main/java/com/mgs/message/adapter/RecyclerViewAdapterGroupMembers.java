@@ -12,17 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mgs.message.R;
-import com.mgs.message.data.User;
+import com.mgs.message.data.UserObject;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class RecyclerViewAdapterGroupMembers extends RecyclerView.Adapter<RecyclerViewAdapterGroupMembers.ViewHolder> {
-    private List<User> userList;
+    private List<UserObject> userObjectList;
     private HashMap<String, Bitmap> iconMap;
 
-    public RecyclerViewAdapterGroupMembers(List<User> userList, HashMap<String, Bitmap> iconMap) {
-        this.userList = userList;
+    public RecyclerViewAdapterGroupMembers(List<UserObject> userObjectList, HashMap<String, Bitmap> iconMap) {
+        this.userObjectList = userObjectList;
         this.iconMap = iconMap;
     }
 
@@ -39,13 +39,13 @@ public class RecyclerViewAdapterGroupMembers extends RecyclerView.Adapter<Recycl
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (position == 0)
             holder.textView.setTextColor(Color.parseColor("#D7AC57"));
-        holder.textView.setText(userList.get(position).getUsername());
-        holder.imageView.setImageBitmap(iconMap.get(userList.get(position).getIcon()));
+        holder.textView.setText(userObjectList.get(position).getUsername());
+        holder.imageView.setImageBitmap(iconMap.get(userObjectList.get(position).getIcon()));
     }
 
     @Override
     public int getItemCount() {
-        return userList.size();
+        return userObjectList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

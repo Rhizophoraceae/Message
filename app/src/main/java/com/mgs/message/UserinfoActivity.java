@@ -28,7 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.mgs.message.service.MessageService;
 import com.mgs.message.utils.ToastSender;
-import com.mgs.message.data.User;
+import com.mgs.message.data.UserObject;
 import com.mgs.message.utils.CurrentUser;
 
 import org.json.JSONException;
@@ -65,8 +65,8 @@ public class UserinfoActivity extends AppCompatActivity {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0) {
-                CurrentUser.user.setSignature(editTextSignature.getText().toString().trim());
-                CurrentUser.user.setEmail(editTextEmail.getText().toString().trim());
+                CurrentUser.userObject.setSignature(editTextSignature.getText().toString().trim());
+                CurrentUser.userObject.setEmail(editTextEmail.getText().toString().trim());
                 ToastSender.send(getApplicationContext(), "保存成功");
             } else {
                 ToastSender.send(getApplicationContext(), "保存失败");
@@ -86,7 +86,7 @@ public class UserinfoActivity extends AppCompatActivity {
                 String url = "http://" + CurrentUser.hostIp + ":" + CurrentUser.hostPort + "/MessageServer/ChangeIcon";
                 uploading(url, photoFile);
                 CurrentUser.icon = BitmapFactory.decodeFile(photoFile.getPath());
-                CurrentUser.iconMap.put(CurrentUser.user.getIcon(), CurrentUser.icon);
+                CurrentUser.iconMap.put(CurrentUser.userObject.getIcon(), CurrentUser.icon);
                 imageViewIcon.setImageURI(result.getData().getData());
                 Log.i("userInfo", "返回成功");
             } else {
@@ -97,15 +97,15 @@ public class UserinfoActivity extends AppCompatActivity {
         imageViewIcon.setImageBitmap(CurrentUser.icon);
         imageViewIcon.setOnClickListener(view -> openAlbum());
         textViewId = this.findViewById(R.id.textViewId);
-        textViewId.setText(CurrentUser.user.getUserId() + "");
+        textViewId.setText(CurrentUser.userObject.getUserId() + "");
         editTextUsername = this.findViewById(R.id.editTextUsername);
-        editTextUsername.setText(CurrentUser.user.getUsername());
+        editTextUsername.setText(CurrentUser.userObject.getUsername());
         editTextSignature = this.findViewById(R.id.editTextSignature);
-        editTextSignature.setText(CurrentUser.user.getSignature());
+        editTextSignature.setText(CurrentUser.userObject.getSignature());
         editTextEmail = this.findViewById(R.id.editTextEmail);
-        editTextEmail.setText(CurrentUser.user.getEmail());
+        editTextEmail.setText(CurrentUser.userObject.getEmail());
         Button buttonSave = this.findViewById(R.id.buttonSave);
-        buttonSave.setOnClickListener(view -> saveUserInfo(CurrentUser.user.getUserId(), editTextSignature.getText().toString().trim(), editTextEmail.getText().toString().trim()));
+        buttonSave.setOnClickListener(view -> saveUserInfo(CurrentUser.userObject.getUserId(), editTextSignature.getText().toString().trim(), editTextEmail.getText().toString().trim()));
         Button buttonLogout = this.findViewById(R.id.buttonLogout);
         buttonLogout.setOnClickListener(view -> logout());
         ActionBar actionBar = getSupportActionBar();
@@ -122,10 +122,10 @@ public class UserinfoActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        CurrentUser.user = new User();
+        CurrentUser.userObject = new UserObject();
         CurrentUser.icon = null;
-        CurrentUser.userList = new ArrayList<>();
-        CurrentUser.groupList = new ArrayList<>();
+        CurrentUser.userObjectList = new ArrayList<>();
+        CurrentUser.groupObjectList = new ArrayList<>();
         CurrentUser.settingList = new ArrayList<>();
         CurrentUser.iconMap = new HashMap<>();
         CurrentUser.iconMapGroup = new HashMap<>();
@@ -180,7 +180,7 @@ public class UserinfoActivity extends AppCompatActivity {
         //创建MultipartBody,给RequestBody进行设置
         MultipartBody multipartBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("userId", CurrentUser.user.getUserId() + "")
+                .addFormDataPart("userId", CurrentUser.userObject.getUserId() + "")
                 .addFormDataPart("icon", file.getName(), fileBody)
                 .build();
         //创建Request

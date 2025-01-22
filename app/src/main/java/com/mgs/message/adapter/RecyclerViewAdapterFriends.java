@@ -14,18 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mgs.message.ChatActivity;
 import com.mgs.message.R;
-import com.mgs.message.data.User;
+import com.mgs.message.data.UserObject;
 import com.mgs.message.utils.CurrentUser;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerViewAdapterFriends.ViewHolder> {
-    private List<User> userList;
+    private List<UserObject> userObjectList;
     private HashMap<String, Bitmap> iconMap;
 
-    public RecyclerViewAdapterFriends(List<User> userList, HashMap<String, Bitmap> iconMap) {
-        this.userList = userList;
+    public RecyclerViewAdapterFriends(List<UserObject> userObjectList, HashMap<String, Bitmap> iconMap) {
+        this.userObjectList = userObjectList;
         this.iconMap = iconMap;
     }
 
@@ -40,13 +40,13 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.textView.setText(userList.get(position).getUsername());
-        holder.imageView.setImageBitmap(iconMap.get(userList.get(position).getIcon()));
+        holder.textView.setText(userObjectList.get(position).getUsername());
+        holder.imageView.setImageBitmap(iconMap.get(userObjectList.get(position).getIcon()));
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), ChatActivity.class);
             intent.putExtra("toPosition", position);
             view.getContext().startActivity(intent);
-            CurrentUser.toId = userList.get(position).getUserId();
+            CurrentUser.toId = userObjectList.get(position).getUserId();
             CurrentUser.isGroup = 0;
             Log.i("click", "clicked" + position);
         });
@@ -54,7 +54,7 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemCount() {
-        return userList.size();
+        return userObjectList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
